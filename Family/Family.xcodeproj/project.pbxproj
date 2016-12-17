@@ -12,6 +12,7 @@
 		9FFAD0251E050ED900AE2718 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FFAD0231E050ED900AE2718 /* Main.storyboard */; };
 		9FFAD0271E050ED900AE2718 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FFAD0261E050ED900AE2718 /* Assets.xcassets */; };
 		9FFAD02A1E050ED900AE2718 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FFAD0281E050ED900AE2718 /* LaunchScreen.storyboard */; };
+		9FFAD0321E050F8000AE2718 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFAD0311E050F8000AE2718 /* Family.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		9FFAD0261E050ED900AE2718 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9FFAD0291E050ED900AE2718 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9FFAD02B1E050ED900AE2718 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9FFAD0311E050F8000AE2718 /* Family.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Family.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				9FFAD01F1E050ED900AE2718 /* AppDelegate.swift */,
 				9FFAD0211E050ED900AE2718 /* ViewController.swift */,
+				9FFAD0311E050F8000AE2718 /* Family.swift */,
 				9FFAD0231E050ED900AE2718 /* Main.storyboard */,
 				9FFAD0261E050ED900AE2718 /* Assets.xcassets */,
 				9FFAD0281E050ED900AE2718 /* LaunchScreen.storyboard */,
@@ -138,6 +141,7 @@
 			files = (
 				9FFAD0221E050ED900AE2718 /* ViewController.swift in Sources */,
 				9FFAD0201E050ED900AE2718 /* AppDelegate.swift in Sources */,
+				9FFAD0321E050F8000AE2718 /* Family.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +265,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Family/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = self.edu.Family;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -273,6 +278,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Family/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = self.edu.Family;
 				PRODUCT_NAME = "$(TARGET_NAME)";
