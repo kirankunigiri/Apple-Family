@@ -14,7 +14,10 @@ import MultipeerConnectivity
 
 // MARK: - Family Protocol
 protocol FamilyDelegate {
+    
+    /** Runs when the device has received data from another peer. */
     func receivedData(data: Data)
+    
 }
 
 
@@ -24,14 +27,21 @@ class Family: NSObject {
     
     
     // MARK: Properties
-    /** Limited to one hyphen (-) and 15 characters */
+    
+    /** The name of the signal. Limited to one hyphen (-) and 15 characters */
     var serviceType: String!
+    /** The device's name that will appear to others */
     var devicePeerID: MCPeerID!
+    /** The host will use this to advertise its signal */
     var serviceAdvertiser: MCNearbyServiceAdvertiser!
+    /** Devices will use this to look for a hosted session */
     var serviceBrowser: MCNearbyServiceBrowser!
+    /** The amount of time that can be spent connecting with a device before it times out */
     var connectionTimeout = 10.0
+    /** The delegate. Conform to its methods to be informed when certain events occur */
     var delegate : FamilyDelegate?
     
+    /** The main object that manages the current connections */
     lazy var session: MCSession = {
         let session = MCSession(peer: self.devicePeerID, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
         session.delegate = self
@@ -41,22 +51,27 @@ class Family: NSObject {
     
     
     // MARK: - Initializers
-    /** Initializes the family. Service type is limited to one hyphen (-) and 15 characters */
+    
+    /** Initializes the family. Service type is just the name of the signal, and is limited to one hyphen (-) and 15 characters */
     init(serviceType: String) {
         super.init()
         
+        // Setup device/signal properties
         self.serviceType = serviceType
         self.devicePeerID = MCPeerID(displayName: UIDevice.current.name)
         
+        // Initialize the service advertiser
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.devicePeerID, discoveryInfo: nil, serviceType: serviceType)
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
         
+        // Initialize the service browser
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.devicePeerID, serviceType: serviceType)
         self.serviceBrowser.delegate = self
         self.serviceBrowser.startBrowsingForPeers()
     }
     
+    // Stop the advertising and browsing services
     deinit {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
@@ -64,6 +79,8 @@ class Family: NSObject {
     
     
     // MARK: - Methods
+    
+    /** Sends data to all connected peers. Pass in an object, and the method will convert it into data and send it. You can use the Data extended method, `convertData()` in order to convert it back into an object. */
     func sendData(object: Any) {
         if (session.connectedPeers.count > 0) {
             do {
@@ -158,7 +175,7 @@ extension Family: MCSessionDelegate {
 // MARK: - Data extension for conversion
 extension Data {
     
-    /** Unarchive NSData into an object. You must manually cast it into a class */
+    /** Unarchive data into an object. It will be returned as type `Any` but you can cast it into the correct type. */
     func convert() -> Any {
         return NSKeyedUnarchiver.unarchiveObject(with: self)!
     }
@@ -171,7 +188,8 @@ extension Data {
 extension MCSessionState {
     
     // TODO: Method or function var?
-    /** String version of an MCSessionState */
+    
+    /** String version of an `MCSessionState` */
     func stringValue() -> String {
         switch(self) {
             case .notConnected: return "Not Connected"
