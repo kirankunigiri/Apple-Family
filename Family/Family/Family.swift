@@ -33,7 +33,6 @@ class Family: NSObject {
     
     /** The name of the signal. Limited to one hyphen (-) and 15 characters */
     var serviceType: String!
-    
     /** The device's name that will appear to others */
     var devicePeerID: MCPeerID!
     /** The host will use this to advertise its signal */
@@ -57,18 +56,23 @@ class Family: NSObject {
     // MARK: - Initializers
     
     /** Initializes the family. Service type is just the name of the signal, and is limited to one hyphen (-) and 15 characters */
-    init(serviceType: String) {
+    convenience init(serviceType: String) {
+        self.init(serviceType: serviceType, deviceName: UIDevice.current.name)
+    }
+    
+    /** Initializes the family. Service type is just the name of the signal, and is limited to one hyphen (-) and 15 characters. The device name is what others will see. */
+    init(serviceType: String, deviceName: String) {
         super.init()
         
         // Setup device/signal properties
         self.serviceType = serviceType
-        self.devicePeerID = MCPeerID(displayName: UIDevice.current.name)
+        self.devicePeerID = MCPeerID(displayName: deviceName)
         
-        // Initialize the service advertiser
+        // Setup the service advertiser
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.devicePeerID, discoveryInfo: nil, serviceType: serviceType)
         self.serviceAdvertiser.delegate = self
         
-        // Initialize the service browser
+        // Setup the service browser
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.devicePeerID, serviceType: serviceType)
         self.serviceBrowser.delegate = self
     }
@@ -91,7 +95,7 @@ class Family: NSObject {
         self.serviceBrowser.startBrowsingForPeers()
     }
     
-    /** Automatically begins to connect all devices with the same service type to each other. It works by beginning the host and join methods on all devices so that they connect as fast as possible. */
+    /** Automatically begins to connect all devices with the same service type to each other. It works by running the host and join methods on all devices so that they connect as fast as possible. */
     func autoConnect() {
         host()
         join()
