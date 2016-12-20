@@ -18,6 +18,9 @@ protocol FamilyDelegate {
     /** Runs when the device has received data from another peer. */
     func receivedData(data: Data)
     
+    /** Runs when a device connects/disconnects to the session */
+    func deviceConnectionsChanged(connectedDevices: [String])
+    
 }
 
 
@@ -30,6 +33,7 @@ class Family: NSObject {
     
     /** The name of the signal. Limited to one hyphen (-) and 15 characters */
     var serviceType: String!
+    
     /** The device's name that will appear to others */
     var devicePeerID: MCPeerID!
     /** The host will use this to advertise its signal */
@@ -39,7 +43,7 @@ class Family: NSObject {
     /** The amount of time that can be spent connecting with a device before it times out */
     var connectionTimeout = 10.0
     /** The delegate. Conform to its methods to be informed when certain events occur */
-    var delegate : FamilyDelegate?
+    var delegate: FamilyDelegate?
     
     /** The main object that manages the current connections */
     lazy var session: MCSession = {
@@ -63,22 +67,41 @@ class Family: NSObject {
         // Initialize the service advertiser
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.devicePeerID, discoveryInfo: nil, serviceType: serviceType)
         self.serviceAdvertiser.delegate = self
-        self.serviceAdvertiser.startAdvertisingPeer()
         
         // Initialize the service browser
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.devicePeerID, serviceType: serviceType)
         self.serviceBrowser.delegate = self
-        self.serviceBrowser.startBrowsingForPeers()
     }
     
     // Stop the advertising and browsing services
     deinit {
-        self.serviceAdvertiser.stopAdvertisingPeer()
-        self.serviceBrowser.stopBrowsingForPeers()
+        disconnect()
     }
     
     
     // MARK: - Methods
+    
+    /** Begins hosting and advertises its signal to other devices */
+    func host() {
+        self.serviceAdvertiser.startAdvertisingPeer()
+    }
+    
+    /** Begins to look for other devices and joins one */
+    func join() {
+        self.serviceBrowser.startBrowsingForPeers()
+    }
+    
+    /** Automatically begins to connect all devices with the same service type to each other. It works by beginning the host and join methods on all devices so that they connect as fast as possible. */
+    func autoConnect() {
+        host()
+        join()
+    }
+    
+    func disconnect() {
+        self.serviceAdvertiser.stopAdvertisingPeer()
+        self.serviceBrowser.stopBrowsingForPeers()
+        session.disconnect()
+    }
     
     /** Sends data to all connected peers. Pass in an object, and the method will convert it into data and send it. You can use the Data extended method, `convertData()` in order to convert it back into an object. */
     func sendData(object: Any) {
@@ -145,6 +168,7 @@ extension Family: MCSessionDelegate {
     // Peer changed state
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         print("Peer \(peerID) changed state to \(state)")
+        self.delegate?.deviceConnectionsChanged(connectedDevices: session.connectedPeers.map({$0.displayName}))
     }
     
     // Received data

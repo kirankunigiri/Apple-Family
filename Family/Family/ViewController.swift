@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     
     // Outlets
     @IBOutlet weak var textLabel: UILabel!
+    @IBOutlet weak var devicesLabel: UILabel!
     @IBOutlet weak var textField: UITextField!
     
     // Properties
@@ -27,6 +28,21 @@ class ViewController: UIViewController {
         family.delegate = self
     }
 
+    @IBAction func hostButtonPressed(_ sender: UIButton) {
+        family.host()
+    }
+    
+    @IBAction func joinButtonPressed(_ sender: UIButton) {
+        family.join()
+    }
+    
+    @IBAction func autoButtonPressed(_ sender: UIButton) {
+        family.autoConnect()
+    }
+    
+    @IBAction func disconnectButtonPressed(_ sender: UIButton) {
+        family.disconnect()
+    }
 
 }
 
@@ -37,7 +53,8 @@ extension ViewController: UITextFieldDelegate {
         if (textField.text != nil && textField.text!.characters.count > 0) {
             family.sendData(object: textField.text!)
         }
-        return true
+        textField.resignFirstResponder()
+        return false
     }
 }
 
@@ -47,6 +64,16 @@ extension ViewController: FamilyDelegate {
         OperationQueue.main.addOperation {
             let string = data.convert() as? String
             self.textLabel.text = string
+        }
+    }
+    
+    func deviceConnectionsChanged(connectedDevices: [String]) {
+        OperationQueue.main.addOperation {
+            if (connectedDevices.count > 0) {
+                self.devicesLabel.text = "Connected Devices: \(connectedDevices)"
+            } else {
+                self.devicesLabel.text = "No devices conncted"
+            }
         }
     }
     
