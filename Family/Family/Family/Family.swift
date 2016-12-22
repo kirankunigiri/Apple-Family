@@ -115,6 +115,7 @@ class Family: NSObject {
     
     
     // NAVIGATION CONTROLLER
+    
     func cancelButton() {
         self.disconnect()
         inviteNavigationController.dismiss(animated: true, completion: nil)
@@ -168,6 +169,16 @@ class Family: NSObject {
         acceptAuto()
     }
     
+    /** Stops the invitation process */
+    func stopInviting() {
+        self.serviceBrowser.stopBrowsingForPeers()
+    }
+    
+    /** Stops accepting invites and becomes invisible on the network */
+    func stopAccepting() {
+        self.serviceAdvertiser.stopAdvertisingPeer()
+    }
+    
     /** Stops all invite/accept services */
     func stopSearching() {
         self.serviceAdvertiser.stopAdvertisingPeer()
@@ -176,10 +187,15 @@ class Family: NSObject {
     
     /** Disconnects from the current session and stops all searching activity */
     func disconnect() {
-        stopSearching()
         session.disconnect()
         connectedPeers.removeAll()
         availablePeers.removeAll()
+    }
+    
+    /** Shuts down all family services. Stops inviting/accepting and disconnects from the session */
+    func shutDown() {
+        stopSearching()
+        disconnect()
     }
     
     enum InviteMode {
