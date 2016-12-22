@@ -18,6 +18,9 @@ protocol FamilyDelegate {
     /** Runs when the device has received data from another peer. */
     func receivedData(data: Data)
     
+    /** Runs when the device has received an invitation from another */
+    func receivedInvitation(device: String, alert: UIAlertController?)
+    
     /** Runs when a device connects/disconnects to the session */
     func deviceConnectionsChanged(connectedDevices: [String])
     
@@ -43,6 +46,15 @@ class Family: NSObject {
     var connectionTimeout = 10.0
     /** The delegate. Conform to its methods to be informed when certain events occur */
     var delegate: FamilyDelegate?
+    /** Whether the device is automatically inviting all devices */
+    var inviteMode = InviteMode.Auto
+    /** Whether the device is automatically accepting all invitations */
+    var acceptMode = InviteMode.Auto
+    
+    var inviteNavigationController: UINavigationController!
+    var inviteController: InviteTableViewController!
+    var availablePeers: [Peer] = []
+    var connectedPeers: [Peer] = []
     
     /** The main object that manages the current connections */
     lazy var session: MCSession = {
@@ -75,6 +87,21 @@ class Family: NSObject {
         // Setup the service browser
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.devicePeerID, serviceType: serviceType)
         self.serviceBrowser.delegate = self
+        
+        // Setup the invite view controller
+        
+        let storyboard = UIStoryboard(name: "Family", bundle: nil)
+        inviteController = storyboard.instantiateViewController(withIdentifier: "inviteViewController") as! InviteTableViewController
+        inviteController.delegate = self
+        
+        inviteNavigationController = UINavigationController(rootViewController: inviteController)
+        inviteNavigationController.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
+        
+        let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButton))
+        let doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButton))
+        doneBarButton.isEnabled = false
+        inviteController.navigationItem.setLeftBarButton(cancelBarButton, animated: false)
+        inviteController.navigationItem.setRightBarButton(doneBarButton, animated: true)
     }
     
     // Stop the advertising and browsing services
@@ -85,26 +112,84 @@ class Family: NSObject {
     
     // MARK: - Methods
     
-    /** Begins hosting and advertises its signal to other devices */
-    func host() {
-        self.serviceAdvertiser.startAdvertisingPeer()
+    
+    
+    // NAVIGATION CONTROLLER
+    func cancelButton() {
+        self.disconnect()
+        inviteNavigationController.dismiss(animated: true, completion: nil)
     }
     
-    /** Begins to look for other devices and joins one */
-    func join() {
+    func doneButton() {
+        inviteNavigationController.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    
+    // HOST
+    
+    /** Automatically invites all devices it finds */
+    func inviteAuto() {
+        self.inviteMode = .Auto
         self.serviceBrowser.startBrowsingForPeers()
     }
     
-    /** Automatically begins to connect all devices with the same service type to each other. It works by running the host and join methods on all devices so that they connect as fast as possible. */
-    func autoConnect() {
-        host()
-        join()
+    /** Returns a View Controller that you can present so the user can manually invite certain devices */
+    func inviteUI() -> UIViewController {
+        self.inviteMode = .UI
+        self.serviceBrowser.startBrowsingForPeers()
+        
+        return inviteNavigationController
     }
     
-    func disconnect() {
+    
+    
+    // JOIN
+    
+    /** Automatically accepts all invites */
+    func acceptAuto() {
+        self.acceptMode = .Auto
+        self.serviceAdvertiser.startAdvertisingPeer()
+    }
+    
+    /** You will now be given a UIAlertController in the protocol method so that the user can accept/decline an invitation */
+    func acceptUI() {
+        self.acceptMode = .UI
+        self.serviceAdvertiser.startAdvertisingPeer()
+    }
+    
+    
+    
+    // OTHER
+    
+    /** Automatically begins to connect all devices with the same service type to each other. It works by running the host and join methods on all devices so that they connect as fast as possible. */
+    func autoConnect() {
+        inviteAuto()
+        acceptAuto()
+    }
+    
+    /** Stops all invite/accept services */
+    func stopSearching() {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
+    }
+    
+    /** Disconnects from the current session and stops all searching activity */
+    func disconnect() {
+        stopSearching()
         session.disconnect()
+        connectedPeers.removeAll()
+        availablePeers.removeAll()
+    }
+    
+    enum InviteMode {
+        case Auto
+        case UI
+    }
+    
+    enum AcceptMode {
+        case Auto
+        case UI
     }
     
     /** Sends data to all connected peers. Pass in an object, and the method will convert it into data and send it. You can use the Data extended method, `convertData()` in order to convert it back into an object. */
@@ -130,7 +215,21 @@ extension Family: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         
         print("Received invitation from: \(peerID)")
-        invitationHandler(true, self.session)
+        
+        if (acceptMode == .Auto) {
+            // Auto: Accept the invite
+            invitationHandler(true, self.session)
+        } else if (acceptMode == .UI) {
+            // UI: Present an alert
+            let alert = UIAlertController(title: "Invite", message: "You've received an invite from \(peerID.displayName)", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Accept", style: .default, handler: { action in
+                invitationHandler(true, self.session)
+            }))
+            alert.addAction(UIAlertAction(title: "Decline", style: .destructive, handler: { action in
+                invitationHandler(false, self.session)
+            }))
+            delegate?.receivedInvitation(device: peerID.displayName, alert: alert)
+        }
     }
     
     // Error, could not start advertising
@@ -148,7 +247,15 @@ extension Family: MCNearbyServiceBrowserDelegate {
     // Found a peer
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         print("Found peer: \(peerID)")
-        browser.invitePeer(peerID, to: session, withContext: nil, timeout: connectionTimeout)
+        
+        // Update the list and the controller
+        availablePeers.append(Peer(peerID: peerID, state: .notConnected))
+        inviteController.update()
+        
+        // Invite peer in auto mode
+        if (inviteMode == .Auto) {
+            browser.invitePeer(peerID, to: session, withContext: nil, timeout: connectionTimeout)
+        }
     }
     
     
@@ -160,6 +267,17 @@ extension Family: MCNearbyServiceBrowserDelegate {
     // Lost a peer
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         print("Lost peer: \(peerID)")
+        
+        // Update the lost peer
+        availablePeers = availablePeers.filter{ $0.peerID != peerID }
+        inviteController.update()
+    }
+    
+    // A method for debugging
+    func printInfo() {
+        print(availablePeers)
+        print(connectedPeers)
+        print("")
     }
     
 }
@@ -171,7 +289,23 @@ extension Family: MCSessionDelegate {
     
     // Peer changed state
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        print("Peer \(peerID) changed state to \(state)")
+        print("Peer \(peerID.displayName) changed state to \(state.stringValue())")
+        
+        // If the new state is connected, then remove it from the available peers
+        // Otherwise, update the state
+        if state == .connected {
+            availablePeers = availablePeers.filter{ $0.peerID != peerID }
+        } else {
+            availablePeers.filter{ $0.peerID == peerID }.first?.state = state
+        }
+        
+        // Update all connected peers
+        connectedPeers = session.connectedPeers.map{ Peer(peerID: $0, state: .connected) }
+        
+        // Update table view
+        inviteController.update()
+        
+        // Send new connection list to delegate
         self.delegate?.deviceConnectionsChanged(connectedDevices: session.connectedPeers.map({$0.displayName}))
     }
     
@@ -200,6 +334,24 @@ extension Family: MCSessionDelegate {
 
 
 
+// MARK: - Invite Tableview Delegate
+extension Family: InviteDelegate {
+    
+    func getAvailablePeers() -> [Peer] {
+        return availablePeers
+    }
+    
+    func getConnectedPeers() -> [Peer] {
+        return connectedPeers
+    }
+    
+    func invitePeer(peer: Peer) {
+        self.serviceBrowser.invitePeer(peer.peerID, to: session, withContext: nil, timeout: connectionTimeout)
+    }
+    
+}
+
+
 // MARK: - Data extension for conversion
 extension Data {
     
@@ -220,7 +372,7 @@ extension MCSessionState {
     /** String version of an `MCSessionState` */
     func stringValue() -> String {
         switch(self) {
-            case .notConnected: return "Not Connected"
+            case .notConnected: return "Available"
             case .connecting: return "Connecting"
             case .connected: return "Connected"
         }
@@ -229,7 +381,17 @@ extension MCSessionState {
 }
 
 
-
+class Peer {
+    
+    init(peerID: MCPeerID, state: MCSessionState) {
+        self.peerID = peerID
+        self.state = state
+    }
+    
+    var peerID: MCPeerID
+    var state: MCSessionState
+    
+}
 
 
 

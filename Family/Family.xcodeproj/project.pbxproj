@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F0340261E09FF3C00B609CF /* Family.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F0340251E09FF3C00B609CF /* Family.storyboard */; };
+		9F03402A1E0A02DA00B609CF /* InviteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0340291E0A02DA00B609CF /* InviteTableViewController.swift */; };
 		9FFAD0201E050ED900AE2718 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFAD01F1E050ED900AE2718 /* AppDelegate.swift */; };
 		9FFAD0221E050ED900AE2718 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFAD0211E050ED900AE2718 /* ViewController.swift */; };
 		9FFAD0251E050ED900AE2718 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FFAD0231E050ED900AE2718 /* Main.storyboard */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9F0340251E09FF3C00B609CF /* Family.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Family.storyboard; sourceTree = "<group>"; };
+		9F0340291E0A02DA00B609CF /* InviteTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteTableViewController.swift; sourceTree = "<group>"; };
 		9FFAD01C1E050ED900AE2718 /* Family.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Family.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FFAD01F1E050ED900AE2718 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9FFAD0211E050ED900AE2718 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -58,6 +62,8 @@
 			children = (
 				9FFAD01F1E050ED900AE2718 /* AppDelegate.swift */,
 				9FFAD0211E050ED900AE2718 /* ViewController.swift */,
+				9F0340251E09FF3C00B609CF /* Family.storyboard */,
+				9F0340291E0A02DA00B609CF /* InviteTableViewController.swift */,
 				9FFAD0311E050F8000AE2718 /* Family.swift */,
 				9FFAD0231E050ED900AE2718 /* Main.storyboard */,
 				9FFAD0261E050ED900AE2718 /* Assets.xcassets */,
@@ -129,6 +135,7 @@
 			files = (
 				9FFAD02A1E050ED900AE2718 /* LaunchScreen.storyboard in Resources */,
 				9FFAD0271E050ED900AE2718 /* Assets.xcassets in Resources */,
+				9F0340261E09FF3C00B609CF /* Family.storyboard in Resources */,
 				9FFAD0251E050ED900AE2718 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,6 +147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F03402A1E0A02DA00B609CF /* InviteTableViewController.swift in Sources */,
 				9FFAD0221E050ED900AE2718 /* ViewController.swift in Sources */,
 				9FFAD0201E050ED900AE2718 /* AppDelegate.swift in Sources */,
 				9FFAD0321E050F8000AE2718 /* Family.swift in Sources */,

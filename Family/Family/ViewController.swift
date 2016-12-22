@@ -28,21 +28,38 @@ class ViewController: UIViewController {
         family.delegate = self
     }
 
-    @IBAction func hostButtonPressed(_ sender: UIButton) {
-        family.host()
-    }
-    
-    @IBAction func joinButtonPressed(_ sender: UIButton) {
-        family.join()
-    }
-    
-    @IBAction func autoButtonPressed(_ sender: UIButton) {
+    @IBAction func autoConnect(_ sender: UIButton) {
         family.autoConnect()
     }
     
-    @IBAction func disconnectButtonPressed(_ sender: UIButton) {
+    @IBAction func inviteAuto(_ sender: UIButton) {
+        family.inviteAuto()
+    }
+    
+    @IBAction func inviteUI(_ sender: UIButton) {
+        let vc = family.inviteUI()
+        self.present(vc, animated: true, completion: nil)
+    }
+    
+    @IBAction func acceptAuto(_ sender: UIButton) {
+        family.acceptAuto()
+    }
+    
+    @IBAction func acceptUI(_ sender: UIButton) {
+        family.acceptUI()
+    }
+    
+    @IBAction func stopSearching(_ sender: UIButton) {
+        family.stopSearching()
+    }
+    
+    @IBAction func disconnect(_ sender: UIButton) {
         family.disconnect()
     }
+    
+    
+    
+    
 
 }
 
@@ -64,6 +81,12 @@ extension ViewController: FamilyDelegate {
         OperationQueue.main.addOperation {
             let string = data.convert() as? String
             self.textLabel.text = string
+        }
+    }
+    
+    func receivedInvitation(device: String, alert: UIAlertController?) {
+        if (family.acceptMode == .UI) {
+            self.present(alert!, animated: true, completion: nil)
         }
     }
     
