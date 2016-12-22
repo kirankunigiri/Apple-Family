@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9FFAD01B1E050ED900AE2718"
-               BuildableName = "Family.app"
-               BlueprintName = "Family"
-               ReferencedContainer = "container:Family.xcodeproj">
+               BlueprintIdentifier = "9F3B0E561E0BC0B4005A6B63"
+               BuildableName = "FamilyDemo-Mac.app"
+               BlueprintName = "FamilyDemo-Mac"
+               ReferencedContainer = "container:FamilyDemo-Mac.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9FFAD01B1E050ED900AE2718"
-            BuildableName = "Family.app"
-            BlueprintName = "Family"
-            ReferencedContainer = "container:Family.xcodeproj">
+            BlueprintIdentifier = "9F3B0E561E0BC0B4005A6B63"
+            BuildableName = "FamilyDemo-Mac.app"
+            BlueprintName = "FamilyDemo-Mac"
+            ReferencedContainer = "container:FamilyDemo-Mac.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -55,10 +55,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9FFAD01B1E050ED900AE2718"
-            BuildableName = "Family.app"
-            BlueprintName = "Family"
-            ReferencedContainer = "container:Family.xcodeproj">
+            BlueprintIdentifier = "9F3B0E561E0BC0B4005A6B63"
+            BuildableName = "FamilyDemo-Mac.app"
+            BlueprintName = "FamilyDemo-Mac"
+            ReferencedContainer = "container:FamilyDemo-Mac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -74,10 +74,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9FFAD01B1E050ED900AE2718"
-            BuildableName = "Family.app"
-            BlueprintName = "Family"
-            ReferencedContainer = "container:Family.xcodeproj">
+            BlueprintIdentifier = "9F3B0E561E0BC0B4005A6B63"
+            BuildableName = "FamilyDemo-Mac.app"
+            BlueprintName = "FamilyDemo-Mac"
+            ReferencedContainer = "container:FamilyDemo-Mac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

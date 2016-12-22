@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  Family
+//  FamilyDemo-iOS
 //
-//  Created by Kiran Kunigiri on 12/16/16.
+//  Created by Kiran Kunigiri on 12/22/16.
 //  Copyright © 2016 Kiran. All rights reserved.
 //
 

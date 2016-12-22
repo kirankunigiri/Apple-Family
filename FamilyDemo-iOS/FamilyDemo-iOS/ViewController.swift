@@ -10,14 +10,15 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    // Outlets
+    // MARK: Outlets
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var devicesLabel: UILabel!
     @IBOutlet weak var textField: UITextField!
     
-    // Properties
+    // MARK: Properties
     let family = Family(serviceType: "family-demo")
     
+    // MARK: Setup
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,6 +29,7 @@ class ViewController: UIViewController {
         family.delegate = self
     }
 
+    // MARK: Methods
     @IBAction func autoConnect(_ sender: UIButton) {
         family.autoConnect()
     }
@@ -57,12 +59,15 @@ class ViewController: UIViewController {
         family.disconnect()
     }
     
-    
-    
-    
+    @IBAction func shutDown(_ sender: UIButton) {
+        family.shutDown()
+    }
 
 }
 
+
+
+// MARK: - Text field delegate
 extension ViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -75,6 +80,9 @@ extension ViewController: UITextFieldDelegate {
     }
 }
 
+
+
+// MARK: - Family delegate
 extension ViewController: FamilyDelegate {
     
     func receivedData(data: Data) {
