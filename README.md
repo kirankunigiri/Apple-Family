@@ -23,7 +23,41 @@ A simple framework that brings Apple devices together - like a family. It will a
 
 Grab the Family-iOS or Family-Mac folder from the Source folder, and drag it into your project!
 
-## Guide
+
+## Example
+
+Family is really easy to setup. Just create it, start the connection, and you can start sending and receiving data! **This is a very basic overview. Check out the Complete Guide and Xcode demo project for the full capabilities.**
+
+The initialization, perhaps in the `viewDidLoad()` method.
+
+```swift
+// Create the family instance
+let family = Family(serviceType: "family-demo")
+
+// Start connecting all devices
+family.autoConnect()
+```
+
+Send some text from a text field. Maybe on a button press.
+
+```swift
+family.sendData(object: textField.text!)
+```
+
+The protocol conformation. We get the data, convert it back to a string using a handy data extension method, and update our UI on the main thread. (You must conform to the other methods as well, but in this case we are just not using them)
+
+```swift
+func receivedData(data: Data) {
+    OperationQueue.main.addOperation {
+        let string = data.convert() as? String
+        self.textLabel.text = string
+    }
+}
+```
+
+And we just setup a session where people can connect and send texts to each other. It's that simple!
+
+## Complete Guide
 
 Family uses the Multipeer Connectivity library by Apple, and simplifies the process. The process of making a session is overcomplicated, and their library of UI elements used to host/invite other devices is often slow or does not work at all. So, this library helps fix that with a much simpler session process along with custom UI elements.
 
@@ -45,15 +79,15 @@ Family uses the Multipeer Connectivity library by Apple, and simplifies the proc
 
 `inviteAuto()` - Automatically invites all detected devices, and continues to look for more until stopped
 
-`inviteUI(), iOS Only` - This method brings up a custom view where you can take a look at all available devices, and invite ones by tapping on them. This view can be fully customized by editing the Family.storyboard source file or the `InviteTableViewController` class.
+`inviteUI() -> UIViewController, iOS Only` - This method returns a custom View Controller that you should present so that the user can see a list of available devices, and invite them by tapping on them. This view can be fully customized by editing the Family.storyboard source file or the `InviteTableViewController` class in the source.
 
 `acceptAuto()` - Automatically accepts any invites received until stopped
 
-`acceptUI(), iOS Only` - In the protocol method, `receivedInvitation`, you will be given a UIAlertController that you can present. The user can then accept or decline the invitation.
+`acceptUI(), iOS Only` - In the protocol method, `receivedInvitation`, you will be given a `UIAlertController` that you can present. The user can then accept or decline the invitation.
 
 **Stop Services**
 
-`stopInviting()` and `stopAccepting` - Stops the invitation and accept services
+`stopInviting()` and `stopAccepting()` - Stops the invitation or accept services
 
 `stopSearching()` - Stops both inviting and accept services
 
@@ -65,52 +99,19 @@ Family uses the Multipeer Connectivity library by Apple, and simplifies the proc
 
 `sendData(object: Any)` - Pass in any object to be sent to all other connected devices. It works by converting it to NSData and then sending it. If you want to send multiple objects, the best way would be to use a single container class.
 
-`convert(), Data class extension` - This is a method that can be used to convert data that you have received from another device back into a useful object. It will return as an Any object, but you can cast it into the right class.
+`convert(), Data class extension` - This is a method that can be used to convert data that you have received from another device back into a useful object. It will return type `Any`, but you can cast it into the right class.
 
 `connectionTimeout, default is 10` - The time (in seconds) a device can spend attempting to connect before quitting.
 
 
 ### Protocol
-You must assign a class to the `FamilyDelegate` and conform to its protocol. There are 2 methods that provide you with useful information. These methods run in the background, so **make sure that you use the main thread for any UI changes.**
+You must assign a class to the `FamilyDelegate` and conform to its protocol. There are 3 methods that provide you with useful information. These methods run in the background, so **make sure that you use the main thread for any UI changes.**
 
 `receivedData(data: Data)` - This runs whenever data has been broadcasted to all devices. You can use the Data extension method `convert()` in order to cast it back into a specific class.
 
 `receivedInvitation(device: String, alert: UIAlertController?)` - Runs whenever the device has received an invitation. `device` is the sender's name, and the alert will only exist if you used `inviteUI()`
 
 `deviceConnectionsChanged(connectedDevices: [String])` - Runs whenever a device has connected/disconnected. It gives you the new list of connected device names.
-
-### Example
-
-This example can also be found in the demo Xcode project. 
-
-The initialization, pherhaps in the `viewDidLoad()` method.
-
-```swift
-// Create the family instance
-let family = Family(serviceType: "family-demo")
-
-// Start connecting all devices
-family.autoConnect()
-```
-
-Send the text from a text field. Maybe on a button press.
-
-```swift
-family.sendData(object: textField.text!)
-```
-
-The protocol conformation. Get the data, convert it back to a string, and update our UI.
-
-```swift
-func receivedData(data: Data) {
-    OperationQueue.main.addOperation {
-        let string = data.convert() as? String
-        self.textLabel.text = string
-    }
-}
-```
-
-And we just setup a session where people can connect and send texts to each other. It's that simple!
 
 ## Coming Soon
 
