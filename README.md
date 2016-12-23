@@ -1,4 +1,4 @@
- ![Upload](Images/JPGbanner.gif)
+ ![Upload](Images/banner/banner.gif)
 # Apple Family ![License MIT](https://img.shields.io/badge/platform-iOS+macOS-677cf4.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![License MIT](https://img.shields.io/badge/build-passing-brightgreen.svg)
@@ -7,7 +7,17 @@ A simple framework that brings Apple devices together - like a family. It will a
 
 ## Demo
 
- ![Upload](Images/demo.gif)
+**iOS UI Demo**
+
+![Upload](Images/demo/uidemo.gif)
+
+**iOS Auto Connect Demo**
+
+![Upload](Images/demo/autodemo.gif)
+
+**Mac Demo**
+
+![Upload](Images/demo/macdemo.gif)
 
 ## Installation
 
