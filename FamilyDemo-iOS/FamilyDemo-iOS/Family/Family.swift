@@ -116,12 +116,12 @@ class Family: NSObject {
     
     // NAVIGATION CONTROLLER
     
-    func cancelButton() {
+    @objc private func cancelButton() {
         self.disconnect()
         inviteNavigationController.dismiss(animated: true, completion: nil)
     }
     
-    func doneButton() {
+    @objc fileprivate func doneButton() {
         inviteNavigationController.dismiss(animated: true, completion: nil)
     }
     
