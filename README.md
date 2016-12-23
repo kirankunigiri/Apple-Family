@@ -1,4 +1,4 @@
- ![Upload](Images/banner/banner.gif)
+ ![Upload](Images/Banner.gif)
 # Apple Family ![License MIT](https://img.shields.io/badge/platform-iOS+macOS-677cf4.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![License MIT](https://img.shields.io/badge/build-passing-brightgreen.svg)
