@@ -51,8 +51,9 @@ class Family: NSObject {
     /** Whether the device is automatically accepting all invitations */
     var acceptMode = InviteMode.Auto
     
-    var inviteNavigationController: UINavigationController!
-    var inviteController: InviteTableViewController!
+    // UI Elements
+    private var inviteNavigationController: UINavigationController!
+    fileprivate var inviteController: InviteTableViewController!
     var availablePeers: [Peer] = []
     var connectedPeers: [Peer] = []
     
@@ -121,7 +122,7 @@ class Family: NSObject {
         inviteNavigationController.dismiss(animated: true, completion: nil)
     }
     
-    @objc fileprivate func doneButton() {
+    @objc private func doneButton() {
         inviteNavigationController.dismiss(animated: true, completion: nil)
     }
     
@@ -397,15 +398,17 @@ extension MCSessionState {
 }
 
 
+// MARK: - Custom Peer class
+// This class is used to contain the peerID along with the state to be presented in a table view
 class Peer {
+    
+    var peerID: MCPeerID
+    var state: MCSessionState
     
     init(peerID: MCPeerID, state: MCSessionState) {
         self.peerID = peerID
         self.state = state
     }
-    
-    var peerID: MCPeerID
-    var state: MCSessionState
     
 }
 

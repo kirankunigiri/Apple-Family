@@ -106,7 +106,8 @@ And we just setup a session where people can connect and send texts to each othe
 
 This project is currently at minimum functionality. It currently can just connect all users with the same service name, and send data between them. Soon, the following features will be added.
 
-- [x] Host/Join/AutoConnect ability (programmatically)
-- [x] Send and convert data to devices
-- [ ] UI - Host can invite devices from a list
-- [ ] UI - Devices receive an invite with the ability to accept/invite
+- [x] Quick auto connect
+- [x] Simple data communication
+- [x] iOS UI elements
+- [ ] macOS UI elements
+- [ ] Simple streaming
