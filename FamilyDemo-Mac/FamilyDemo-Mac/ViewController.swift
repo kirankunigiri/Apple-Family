@@ -61,8 +61,8 @@ extension ViewController: FamilyDelegate {
     
     func receivedData(data: Data) {
         OperationQueue.main.addOperation {
-            let string = data.convert() as? String
-            self.textLabel.stringValue = string!
+            let string = data.convert() as! String
+            self.textLabel.stringValue = string
         }
     }
     

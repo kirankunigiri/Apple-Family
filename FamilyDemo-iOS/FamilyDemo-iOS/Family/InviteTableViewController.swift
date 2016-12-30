@@ -30,7 +30,6 @@ class InviteTableViewController: UITableViewController {
     func update() {
         OperationQueue.main.addOperation {
             self.tableView.reloadData()
-            self.navigationItem.rightBarButtonItem?.isEnabled = (self.delegate?.getConnectedPeers().count)! > 0
         }
     }
 
@@ -87,6 +86,7 @@ extension InviteTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! DeviceCell
         
+        // Update text
         switch indexPath.section {
         case 0:
             let peer = delegate?.getConnectedPeers()[indexPath.row]
@@ -98,6 +98,13 @@ extension InviteTableViewController {
             cell.status.text = peer?.state.stringValue()
         default:
             cell.name.text = ""
+        }
+        
+        // Selection
+        if (indexPath.section == 0) {
+            cell.isUserInteractionEnabled = false
+        } else {
+            cell.isUserInteractionEnabled = true
         }
         
         return cell

@@ -12,6 +12,7 @@
 		9F3B0E5F1E0BC0B4005A6B63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F3B0E5E1E0BC0B4005A6B63 /* Assets.xcassets */; };
 		9F3B0E621E0BC0B4005A6B63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F3B0E601E0BC0B4005A6B63 /* Main.storyboard */; };
 		9F3B0E6E1E0BC0CB005A6B63 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3B0E6B1E0BC0CB005A6B63 /* Family.swift */; };
+		9FF0F6591E0DED54007AC518 /* SwiftHEXColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF0F6581E0DED54007AC518 /* SwiftHEXColors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		9F3B0E611E0BC0B4005A6B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9F3B0E631E0BC0B4005A6B63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9F3B0E6B1E0BC0CB005A6B63 /* Family.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Family.swift; sourceTree = "<group>"; };
+		9FF0F6581E0DED54007AC518 /* SwiftHEXColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftHEXColors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 		9F3B0E591E0BC0B4005A6B63 /* FamilyDemo-Mac */ = {
 			isa = PBXGroup;
 			children = (
+				9FF0F6581E0DED54007AC518 /* SwiftHEXColors.swift */,
 				9F3B0E5A1E0BC0B4005A6B63 /* AppDelegate.swift */,
 				9F3B0E5C1E0BC0B4005A6B63 /* ViewController.swift */,
 				9F3B0E5E1E0BC0B4005A6B63 /* Assets.xcassets */,
@@ -147,6 +150,7 @@
 				9F3B0E5D1E0BC0B4005A6B63 /* ViewController.swift in Sources */,
 				9F3B0E5B1E0BC0B4005A6B63 /* AppDelegate.swift in Sources */,
 				9F3B0E6E1E0BC0CB005A6B63 /* Family.swift in Sources */,
+				9FF0F6591E0DED54007AC518 /* SwiftHEXColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

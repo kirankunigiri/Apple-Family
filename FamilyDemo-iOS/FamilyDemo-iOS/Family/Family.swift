@@ -98,10 +98,7 @@ class Family: NSObject {
         inviteNavigationController = UINavigationController(rootViewController: inviteController)
         inviteNavigationController.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
         
-        let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButton))
         let doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButton))
-        doneBarButton.isEnabled = false
-        inviteController.navigationItem.setLeftBarButton(cancelBarButton, animated: false)
         inviteController.navigationItem.setRightBarButton(doneBarButton, animated: true)
     }
     
