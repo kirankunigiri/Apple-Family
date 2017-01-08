@@ -50,6 +50,8 @@ class Family: NSObject {
     var inviteMode = InviteMode.Auto
     /** Whether the device is automatically accepting all invitations */
     var acceptMode = InviteMode.Auto
+    /** Prints out all errors and status updates */
+    var debugMode = false
     
     var availablePeers: [Peer] = []
     var connectedPeers: [Peer] = []
@@ -171,8 +173,15 @@ class Family: NSObject {
                 let data = NSKeyedArchiver.archivedData(withRootObject: object)
                 try session.send(data, toPeers: session.connectedPeers, with: MCSessionSendDataMode.reliable)
             } catch let error {
-                print(error)
+                printDebug(error.localizedDescription)
             }
+        }
+    }
+
+    /** Prints only if in debug mode */
+    fileprivate func printDebug(_ string: String) {
+        if debugMode {
+            print(string)
         }
     }
     
@@ -186,7 +195,7 @@ extension Family: MCNearbyServiceAdvertiserDelegate {
     // Received invitation
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         
-        print("Received invitation from: \(peerID)")
+        printDebug("Received invitation from: \(peerID)")
         
         if (acceptMode == .Auto) {
             // Auto: Accept the invite
@@ -196,7 +205,7 @@ extension Family: MCNearbyServiceAdvertiserDelegate {
     
     // Error, could not start advertising
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
-        print("Could not start advertising due to error: \(error)")
+        printDebug("Could not start advertising due to error: \(error)")
     }
     
 }
@@ -208,7 +217,7 @@ extension Family: MCNearbyServiceBrowserDelegate {
     
     // Found a peer
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        print("Found peer: \(peerID)")
+        printDebug("Found peer: \(peerID)")
         
         // Update the list and the controller
         availablePeers.append(Peer(peerID: peerID, state: .notConnected))
@@ -222,22 +231,15 @@ extension Family: MCNearbyServiceBrowserDelegate {
     
     // Error, could not start browsing
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
-        print("Could not start browsing due to error: \(error)")
+        printDebug("Could not start browsing due to error: \(error)")
     }
     
     // Lost a peer
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        print("Lost peer: \(peerID)")
+        printDebug("Lost peer: \(peerID)")
         
         // Update the lost peer
         availablePeers = availablePeers.filter{ $0.peerID != peerID }
-    }
-    
-    // A method for debugging
-    func printInfo() {
-        print(availablePeers)
-        print(connectedPeers)
-        print("")
     }
     
 }
@@ -249,7 +251,7 @@ extension Family: MCSessionDelegate {
     
     // Peer changed state
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        print("Peer \(peerID.displayName) changed state to \(state.stringValue())")
+        printDebug("Peer \(peerID.displayName) changed state to \(state.stringValue())")
         
         // If the new state is connected, then remove it from the available peers
         // Otherwise, update the state
@@ -268,23 +270,23 @@ extension Family: MCSessionDelegate {
     
     // Received data
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        print("Received data: \(data.count) bytes")
+        printDebug("Received data: \(data.count) bytes")
         delegate?.receivedData(data: data)
     }
     
     // Received stream
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        print("Received stream")
+        printDebug("Received stream")
     }
     
     // Finished receiving resource
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
-        print("Finished receiving resource with name: \(resourceName)")
+        printDebug("Finished receiving resource with name: \(resourceName)")
     }
     
     // Started receiving resource
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        print("Started receiving resource with name: \(resourceName)")
+        printDebug("Started receiving resource with name: \(resourceName)")
     }
     
 }

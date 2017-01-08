@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9F2225511E0BC05D00F781BF"
-               BuildableName = "FamilyDemo-iOS.app"
-               BlueprintName = "FamilyDemo-iOS"
-               ReferencedContainer = "container:FamilyDemo-iOS.xcodeproj">
+               BlueprintIdentifier = "9FCA92501E21F4F600B6CA4B"
+               BuildableName = "FamilyDemo-Mac.app"
+               BlueprintName = "FamilyDemo-Mac"
+               ReferencedContainer = "container:FamilyDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9F2225511E0BC05D00F781BF"
-            BuildableName = "FamilyDemo-iOS.app"
-            BlueprintName = "FamilyDemo-iOS"
-            ReferencedContainer = "container:FamilyDemo-iOS.xcodeproj">
+            BlueprintIdentifier = "9FCA92501E21F4F600B6CA4B"
+            BuildableName = "FamilyDemo-Mac.app"
+            BlueprintName = "FamilyDemo-Mac"
+            ReferencedContainer = "container:FamilyDemo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -55,10 +55,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9F2225511E0BC05D00F781BF"
-            BuildableName = "FamilyDemo-iOS.app"
-            BlueprintName = "FamilyDemo-iOS"
-            ReferencedContainer = "container:FamilyDemo-iOS.xcodeproj">
+            BlueprintIdentifier = "9FCA92501E21F4F600B6CA4B"
+            BuildableName = "FamilyDemo-Mac.app"
+            BlueprintName = "FamilyDemo-Mac"
+            ReferencedContainer = "container:FamilyDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -74,10 +74,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9F2225511E0BC05D00F781BF"
-            BuildableName = "FamilyDemo-iOS.app"
-            BlueprintName = "FamilyDemo-iOS"
-            ReferencedContainer = "container:FamilyDemo-iOS.xcodeproj">
+            BlueprintIdentifier = "9FCA92501E21F4F600B6CA4B"
+            BuildableName = "FamilyDemo-Mac.app"
+            BlueprintName = "FamilyDemo-Mac"
+            ReferencedContainer = "container:FamilyDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
