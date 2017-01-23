@@ -46,9 +46,7 @@ class Family: NSObject {
         if signal.isConnected {
             deviceList.append(contentsOf: signal.connectedDeviceNames)
         }
-        print("CONNECTED TO MAC")
-        print(signal.connectedDeviceNames)
-        print(signal.connectedPeers)
+        
         delegate?.family(connectedDevicesChanged: deviceList)
     }
     
