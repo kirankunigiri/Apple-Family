@@ -25,6 +25,8 @@
 		9F59667F1E349AD700711A19 /* MacViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F59667E1E349AD700711A19 /* MacViewController.swift */; };
 		9F5966811E349AD700711A19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F5966801E349AD700711A19 /* Assets.xcassets */; };
 		9F5966841E349AD700711A19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F5966821E349AD700711A19 /* Main.storyboard */; };
+		9F5E00ED1E35B94A00D9C146 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5E00EC1E35B94A00D9C146 /* Family.swift */; };
+		9F5E00EE1E35B94A00D9C146 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5E00EC1E35B94A00D9C146 /* Family.swift */; };
 		9F93C16A1E349D0F0011A895 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F93C1691E349D0F0011A895 /* Helper.swift */; };
 		9FB7F8FB1E35A3E800C353B5 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F25E92D1E35642900F08455 /* Signal.swift */; };
 		9FB7F8FC1E35A3EC00C353B5 /* PTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F25E9291E35642900F08455 /* PTManager.swift */; };
@@ -64,6 +66,7 @@
 		9F5966801E349AD700711A19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F5966831E349AD700711A19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9F5966851E349AD700711A19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9F5E00EC1E35B94A00D9C146 /* Family.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Family.swift; sourceTree = "<group>"; };
 		9F93C1511E349C1A0011A895 /* FamilyDemo-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FamilyDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		9F93C1691E349D0F0011A895 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -130,6 +133,7 @@
 				9F25E91C1E35642900F08455 /* Libraries */,
 				9F93C1511E349C1A0011A895 /* FamilyDemo-Bridging-Header.h */,
 				9F93C1691E349D0F0011A895 /* Helper.swift */,
+				9F5E00EC1E35B94A00D9C146 /* Family.swift */,
 				9F5966651E349AD000711A19 /* Family-iOS */,
 				9F59667B1E349AD700711A19 /* Family-Mac */,
 				9F59664C1E349ABC00711A19 /* Products */,
@@ -283,6 +287,7 @@
 				9F5966691E349AD000711A19 /* MobileViewController.swift in Sources */,
 				9F25E9331E35642900F08455 /* PTManager.swift in Sources */,
 				9F93C16A1E349D0F0011A895 /* Helper.swift in Sources */,
+				9F5E00ED1E35B94A00D9C146 /* Family.swift in Sources */,
 				9F25E9341E35642900F08455 /* InviteTableViewController.swift in Sources */,
 				9F5966671E349AD000711A19 /* AppDelegate.swift in Sources */,
 				9F25E9311E35642900F08455 /* PTProtocol.m in Sources */,
@@ -296,6 +301,7 @@
 			files = (
 				9F59667F1E349AD700711A19 /* MacViewController.swift in Sources */,
 				9FB7F8FC1E35A3EC00C353B5 /* PTManager.swift in Sources */,
+				9F5E00EE1E35B94A00D9C146 /* Family.swift in Sources */,
 				9FB7F8FD1E35A44E00C353B5 /* Helper.swift in Sources */,
 				9FB7F9001E35A7E300C353B5 /* PTChannel.m in Sources */,
 				9FB7F8FB1E35A3E800C353B5 /* Signal.swift in Sources */,

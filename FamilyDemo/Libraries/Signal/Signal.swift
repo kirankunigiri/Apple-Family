@@ -20,14 +20,6 @@ protocol SignalDelegate {
     /** Runs when the device has received data from another peer. */
     func signal(didReceiveData data: Data, ofType type: UInt32)
     
-    #if os(iOS)
-    /** Runs when the device has received an invitation from another */
-    func signal(didReceiveInvitation device: String, alertController: UIAlertController?)
-    #elseif os(macOS)
-    /** Runs when the device has received an invitation from another */
-    func signal(didReceiveInvitation device: String)
-    #endif
-    
     /** Runs when a device connects/disconnects to the session */
     func signal(connectedDevicesChanged devices: [String])
     
@@ -290,22 +282,20 @@ extension Signal: MCNearbyServiceAdvertiserDelegate {
         
         OperationQueue.main.addOperation {
             if self.acceptMode == .Auto {
-                #if os(iOS)
-                self.delegate?.signal(didReceiveInvitation: peerID.displayName, alertController: nil)
-                #elseif os(macOS)
-                self.delegate?.signal(didReceiveInvitation: peerID.displayName)
-                #endif
                 invitationHandler(true, self.session)
             } else if self.acceptMode == .UI {
                 #if os(iOS)
                     let alert = UIAlertController(title: "Invite", message: "You've received an invite from \(peerID.displayName)", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Accept", style: .default, handler: { action in
+                        debugPrint("Accepted invitation")
                         invitationHandler(true, self.session)
                     }))
                     alert.addAction(UIAlertAction(title: "Decline", style: .destructive, handler: { action in
                         invitationHandler(false, self.session)
                     }))
-                    self.delegate?.signal(didReceiveInvitation: peerID.displayName, alertController: alert)
+                    
+                    let window = UIApplication.shared.keyWindow
+                    window?.rootViewController?.present(alert, animated: true, completion: nil)
                 #endif
             }
         }
