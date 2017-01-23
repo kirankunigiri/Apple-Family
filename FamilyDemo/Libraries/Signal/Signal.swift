@@ -49,13 +49,14 @@ class Signal: NSObject {
     var inviteMode = InviteMode.Auto
     /** Whether the device is automatically accepting all invitations */
     var acceptMode = InviteMode.Auto
-    /** Peers */
+    /** Peers available to connect to */
     var availablePeers: [Peer] = []
+    /** Peers connected to */
     var connectedPeers: [Peer] = []
+    /** The names of all devices connected */
     var connectedDeviceNames: [String] {
         return session.connectedPeers.map({$0.displayName})
     }
-    var active: Bool = false
     /** Prints out all errors and status updates */
     var debugMode = false
     
@@ -137,7 +138,6 @@ class Signal: NSObject {
     
     /** Returns a View Controller that you can present so the user can manually invite certain devices */
     func inviteUI() {
-        active = true
         self.inviteMode = .UI
         self.serviceBrowser.startBrowsingForPeers()
     
@@ -152,7 +152,6 @@ class Signal: NSObject {
     
     /** Automatically invites all devices it finds */
     func inviteAuto() {
-        active = true
         self.inviteMode = .Auto
         self.serviceBrowser.startBrowsingForPeers()
     }
@@ -163,14 +162,12 @@ class Signal: NSObject {
     
     /** Automatically accepts all invites */
     func acceptAuto() {
-        active = true
         self.acceptMode = .Auto
         self.serviceAdvertiser.startAdvertisingPeer()
     }
     
     /** You will now be given a UIAlertController in the protocol method so that the user can accept/decline an invitation */
     func acceptUI() {
-        active = true
         self.acceptMode = .UI
         self.serviceAdvertiser.startAdvertisingPeer()
     }
@@ -181,7 +178,6 @@ class Signal: NSObject {
     
     /** Automatically begins to connect all devices with the same service type to each other. It works by running the host and join methods on all devices so that they connect as fast as possible. */
     func autoConnect() {
-        active = true
         inviteAuto()
         acceptAuto()
     }
@@ -204,7 +200,6 @@ class Signal: NSObject {
     
     /** Disconnects from the current session and stops all searching activity */
     func disconnect() {
-        active = false
         session.disconnect()
         connectedPeers.removeAll()
         availablePeers.removeAll()
@@ -212,7 +207,6 @@ class Signal: NSObject {
     
     /** Shuts down all signal services. Stops inviting/accepting and disconnects from the session */
     func shutDown() {
-        active = false
         stopSearching()
         disconnect()
     }
