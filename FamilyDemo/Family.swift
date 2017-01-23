@@ -18,6 +18,16 @@ protocol FamilyDelegate {
     
 }
 
+enum SignalType {
+    case Automatic
+    case InviteAuto
+    case AcceptAuto
+    #if os(iOS)
+    case InviteUI
+    case AcceptUI
+    #endif
+}
+
 class Family: NSObject {
     
     static let instance = Family()
@@ -25,23 +35,71 @@ class Family: NSObject {
     var delegate: FamilyDelegate?
     let ptManager = PTManager.instance
     let signal = Signal.instance
+    var signalType = SignalType.AcceptAuto
     
-    func initialize(portNumber: Int, serviceType: String) {
+    func initialize(portNumber: Int, serviceType: String, signalType: SignalType) {
         
         // PTManager
         ptManager.delegate = self
         ptManager.connect(portNumber: portNumber)
         
         // Signal
+        self.signalType = signalType
         signal.initialize(serviceType: serviceType)
         signal.delegate = self
-        signal.autoConnect()
+        signal.debugMode = true
+        
+        // Create a delay because of a bug where signal and peertalk clash on startup
+        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timer), userInfo: nil, repeats: false)
+    }
+    
+    func timer() {
+        #if os(macOS)
+        if !ptManager.isConnected {
+            self.startSignal()
+        }
+        #elseif os(iOS)
+        self.startSignal()
+        #endif
+    }
+    
+    func startSignal() {
+        #if os(macOS)
+            switch signalType {
+            case .Automatic:
+                signal.autoConnect()
+            case .InviteAuto:
+                signal.inviteAuto()
+            case .AcceptAuto:
+                signal.acceptAuto()
+            }
+        #endif
+            
+        #if os(iOS)
+            switch signalType {
+            case .Automatic:
+                signal.autoConnect()
+            case .InviteAuto:
+                signal.inviteAuto()
+            case .AcceptAuto:
+                signal.acceptAuto()
+            case .InviteUI:
+                signal.inviteUI()
+            default:
+                // Accept UI
+                signal.acceptUI()
+        }
+        #endif
     }
     
     fileprivate func updateConnectionList() {
         var deviceList: [String] = []
         if ptManager.isConnected {
+            #if os(iOS)
             deviceList.append("Your Mac")
+            #elseif os(macOS)
+            deviceList.append("Your iDevice")
+            #endif
         }
         if signal.isConnected {
             deviceList.append(contentsOf: signal.connectedDeviceNames)
@@ -87,15 +145,17 @@ extension Family: PTManagerDelegate {
     }
     
     func peertalk(didChangeConnection connected: Bool) {
+        
         #if os(iOS)
         updateConnectionList()
         #elseif os(macOS)
         // Shut down the signal services when the mac is connected via USB
         if connected {
             self.signal.shutDown()
-            updateConnectionList()
+            self.updateConnectionList()
         } else {
-            self.signal.autoConnect()
+            self.startSignal()
+            self.updateConnectionList()
         }
         #endif
     }
@@ -112,7 +172,9 @@ extension Family: SignalDelegate {
     }
     
     func signal(connectedDevicesChanged devices: [String]) {
-        updateConnectionList()
+        OperationQueue.main.addOperation {
+            self.updateConnectionList()
+        }
     }
     
 }

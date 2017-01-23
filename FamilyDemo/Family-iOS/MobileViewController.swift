@@ -20,12 +20,13 @@ class MobileViewController: UIViewController {
     // Properties
     let family = Family.instance
     let imagePicker = UIImagePickerController()
+    var signalType: SignalType!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         family.delegate = self
-        family.initialize(portNumber: PORT_NUMBER, serviceType: "family-demo")
+        family.initialize(portNumber: PORT_NUMBER, serviceType: "family-demo", signalType: .Automatic)
         
         // Image picker
         imagePicker.delegate = self
@@ -56,6 +57,7 @@ class MobileViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
+}
 
 
 

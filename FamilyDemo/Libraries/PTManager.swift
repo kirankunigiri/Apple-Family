@@ -137,9 +137,10 @@ protocol PTManagerDelegate {
         
         func ioFrameChannel(_ channel: PTChannel!, didEndWithError error: Error?) {
             printDebug("ERROR (Connection ended): \(error?.localizedDescription)")
-            peerChannel = nil
-            serverChannel = nil
-            delegate?.peertalk(didChangeConnection: false)
+            
+            self.peerChannel = nil
+            self.serverChannel = nil
+            self.delegate?.peertalk(didChangeConnection: false)
         }
         
         func ioFrameChannel(_ channel: PTChannel!, didAcceptConnection otherChannel: PTChannel!, from address: PTAddress!) {
@@ -227,7 +228,7 @@ protocol PTManagerDelegate {
         
         /** Whether or not the device is connected */
         var isConnected: Bool {
-            return connectedChannel != nil
+            return connectedDeviceID != nil
         }
         
         /** Closes the USB connection */
@@ -372,6 +373,8 @@ protocol PTManagerDelegate {
                     connectedDeviceID = nil
                     self.didChangeValue(forKey: "connectedDeviceID")
                 }
+                
+                self.delegate?.peertalk(didChangeConnection: false)
             }
             
             @objc fileprivate func enqueueConnectToLocalIPv4Port() {
