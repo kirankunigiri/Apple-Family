@@ -21,11 +21,21 @@ Grab the files from the source folder and drag them to your project! You also ne
 
 Family is simple to setup. Just start the connection, and you can start sending and receiving data! **Check out the  Xcode demo project for a full implementation .**
 
+#### Setup
+
 Start the connection. Specify a port number, which can be any 4 digit number, and a service type, which is a string limited to 15 characters and 1 hyphen. In order to be discovered, a device must use the same port number and service type.
 
 ```swift
-family.delegate = self
+Family.instance.delegate = self
 Family.instance.initialize(portNumber: 2345, serviceType: "family-example", signalType: .Automatic)
+```
+
+Next, we also need to run a method in the App Delegate when the app restarts because the usb connection automatically disconnects when the iPhone is put to sleep.
+
+```swift
+func applicationDidBecomeActive(_ application: UIApplication) {
+    Family.instance.reconnect()
+}
 ```
 
 In Family, you can add a tag to the data you send so that the receiver knows what the data is. You can create a `UInt32` enum to manage them. Here's an example:
