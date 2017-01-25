@@ -1,7 +1,7 @@
  ![Upload](Images/Banner.gif)
-# Apple Family ![License MIT](https://img.shields.io/badge/platform-iOS+macOS-677cf4.svg)
+# Apple Family ![Platform](https://img.shields.io/badge/platform-iOS+macOS-677cf4.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
-![License MIT](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Build Passing](https://img.shields.io/badge/build-passing-brightgreen.svg)
 
 A simple framework that brings Apple devices together - like a family. It will automatically use either bluetooth or wifi to connect multiple Apple devices and share information. Currently supports iOS and macOS.
 
