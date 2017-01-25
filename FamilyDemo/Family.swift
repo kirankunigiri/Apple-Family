@@ -35,21 +35,31 @@ class Family: NSObject {
     var delegate: FamilyDelegate?
     let ptManager = PTManager.instance
     let signal = Signal.instance
+    
     var signalType = SignalType.AcceptAuto
+    var portNumber: Int!
+    var serviceType: String!
     
     func initialize(portNumber: Int, serviceType: String, signalType: SignalType) {
+        
+        self.portNumber = portNumber
+        self.serviceType = serviceType
+        self.signalType = signalType
         
         // PTManager
         ptManager.delegate = self
         ptManager.connect(portNumber: portNumber)
         
         // Signal
-        self.signalType = signalType
         signal.initialize(serviceType: serviceType)
         signal.delegate = self
         
         // Create a delay because of a bug where signal and peertalk clash on startup
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timer), userInfo: nil, repeats: false)
+        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timer), userInfo: nil, repeats: false)
+    }
+    
+    func reconnect() {
+        ptManager.connect(portNumber: portNumber)
     }
     
     func timer() {
@@ -171,9 +181,7 @@ extension Family: SignalDelegate {
     }
     
     func signal(connectedDevicesChanged devices: [String]) {
-        OperationQueue.main.addOperation {
-            self.updateConnectionList()
-        }
+        self.updateConnectionList()
     }
     
 }

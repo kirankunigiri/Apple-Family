@@ -67,12 +67,11 @@ class Signal: NSObject {
     #endif
     
     /** The main object that manages the current connections */
-    var session: MCSession!
-//    lazy var session: MCSession = {
-//        let session = MCSession(peer: self.devicePeerID, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
-//        session.delegate = self
-//        return session
-//    }()
+    lazy var session: MCSession = {
+        let session = MCSession(peer: self.devicePeerID, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
+        session.delegate = self
+        return session
+    }()
     
     
     
@@ -101,8 +100,6 @@ class Signal: NSObject {
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.devicePeerID, serviceType: serviceType)
         self.serviceBrowser.delegate = self
         
-        self.session = MCSession(peer: self.devicePeerID, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
-        self.session.delegate = self
         
         #if os(iOS)
             // Setup the invite view controller
@@ -212,8 +209,6 @@ class Signal: NSObject {
     func shutDown() {
         stopSearching()
         disconnect()
-        self.session = MCSession(peer: self.devicePeerID, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
-        self.session.delegate = self
     }
     
     var isConnected: Bool {
