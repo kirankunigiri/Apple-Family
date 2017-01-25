@@ -1,4 +1,4 @@
- ![Upload](Images/Banner.gif)
+ ![Banner](Images/Banner.gif)
 # Apple Family ![Platform](https://img.shields.io/badge/platform-iOS+macOS-677cf4.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Build Passing](https://img.shields.io/badge/build-passing-brightgreen.svg)
@@ -38,6 +38,8 @@ func applicationDidBecomeActive(_ application: UIApplication) {
 }
 ```
 
+#### Send Data
+
 In Family, you can add a tag to the data you send so that the receiver knows what the data is. You can create a `UInt32` enum to manage them. Here's an example:
 
 ```swift
@@ -53,7 +55,9 @@ Send some text, and specify its type using our enum. Family automatically conver
 Family.instance.sendObject(object: "Hello World!", type: DataType.string.rawValue)
 ```
 
-The protocol conformation. We get the data, check its type, convert it back to the according object (in this case, a string) using a handy data extension method, and update our UI. You can also update the list of connected devices with the second method.
+#### Receive Data (Protocol)
+
+The protocol conformation. We get the data, check its type, convert it back to the according object, and update our UI. The class has an extension to the Data class - the method `convert()` - that uses the NSKeyedArchiver class to convert data back into the object you need. You can also update the list of connected devices with the second method.
 
 ```swift
 func family(didReceiveData data: Data, ofType type: UInt32) {
