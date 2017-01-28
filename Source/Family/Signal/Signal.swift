@@ -140,9 +140,18 @@ class Signal: NSObject {
     func inviteUI() {
         self.inviteMode = .UI
         self.serviceBrowser.startBrowsingForPeers()
+        topMostController().present(inviteNavigationController, animated: true, completion: nil)
+    }
     
-        let window = UIApplication.shared.keyWindow
-        window?.rootViewController?.present(inviteNavigationController, animated: true, completion: nil)
+    /** Returns the View Controller at the top of the view heirarchy
+    http://stackoverflow.com/questions/6131205/iphone-how-to-find-topmost-view-controller
+     */
+    fileprivate func topMostController() -> UIViewController {
+        var topController: UIViewController? = UIApplication.shared.keyWindow?.rootViewController
+        while ((topController?.presentedViewController) != nil) {
+            topController = topController?.presentedViewController
+        }
+        return topController!
     }
     #endif
     
@@ -297,8 +306,7 @@ extension Signal: MCNearbyServiceAdvertiserDelegate {
                         invitationHandler(false, self.session)
                     }))
                     
-                    let window = UIApplication.shared.keyWindow
-                    window?.rootViewController?.present(alert, animated: true, completion: nil)
+                    self.topMostController().present(alert, animated: true, completion: nil)
                 #endif
             }
         }
@@ -436,6 +444,7 @@ extension Signal: InviteDelegate {
 #endif
 
 
+
 // MARK: - Information data
 extension MCSessionState {
     
@@ -468,5 +477,19 @@ class Peer {
 
 
 
+// MARK: - Data extension for conversion
+extension Data {
+    
+    /** Unarchive data into an object. It will be returned as type `Any` but you can cast it into the correct type. */
+    func convert() -> Any {
+        return NSKeyedUnarchiver.unarchiveObject(with: self)!
+    }
+    
+    /** Converts an object into Data using the NSKeyedArchiver */
+    static func toData(object: Any) -> Data {
+        return NSKeyedArchiver.archivedData(withRootObject: object)
+    }
+    
+}
 
 

@@ -19,40 +19,55 @@ protocol FamilyDelegate {
 }
 
 enum SignalType {
-    case Automatic
-    case InviteAuto
-    case AcceptAuto
+    case automatic
+    case inviteAuto
+    case acceptAuto
     #if os(iOS)
-    case InviteUI
-    case AcceptUI
+    case acceptUI
     #endif
+    case none
+}
+
+enum ConnectionType {
+    case signal
+    case usb
+    case none
 }
 
 class Family: NSObject {
     
     static let instance = Family()
     
-    var delegate: FamilyDelegate?
+    var delegate = MulticastDelegate<FamilyDelegate>()
     let ptManager = PTManager.instance
     let signal = Signal.instance
-    var signalType = SignalType.AcceptAuto
+    
+    var signalType = SignalType.none
+    var portNumber: Int!
+    var serviceType: String!
+    
+    /** The list of device names connected */
+    var connectedDevices: [String] = []
     
     func initialize(portNumber: Int, serviceType: String, signalType: SignalType) {
+        
+        self.portNumber = portNumber
+        self.serviceType = serviceType
+        self.signalType = signalType
         
         // PTManager
         ptManager.delegate = self
         ptManager.connect(portNumber: portNumber)
         
         // Signal
-        self.signalType = signalType
         signal.initialize(serviceType: serviceType)
         signal.delegate = self
         
         // Create a delay because of a bug where signal and peertalk clash on startup
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timer), userInfo: nil, repeats: false)
+        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timer), userInfo: nil, repeats: false)
     }
     
-    func timer() {
+    @objc fileprivate func timer() {
         #if os(macOS)
         if !ptManager.isConnected {
             self.startSignal()
@@ -65,53 +80,81 @@ class Family: NSObject {
     func startSignal() {
         #if os(macOS)
             switch signalType {
-            case .Automatic:
+            case .automatic:
                 signal.autoConnect()
-            case .InviteAuto:
+            case .inviteAuto:
                 signal.inviteAuto()
-            case .AcceptAuto:
+            case .acceptAuto:
                 signal.acceptAuto()
+            case .none:
+                return
             }
         #endif
             
         #if os(iOS)
             switch signalType {
-            case .Automatic:
+            case .automatic:
                 signal.autoConnect()
-            case .InviteAuto:
+            case .inviteAuto:
                 signal.inviteAuto()
-            case .AcceptAuto:
+            case .acceptAuto:
                 signal.acceptAuto()
-            case .InviteUI:
-                signal.inviteUI()
-            default:
-                // Accept UI
-                signal.acceptUI()
+            case .acceptUI:
+                return
+            case .none:
+                return
         }
         #endif
     }
     
+    /** Updates the list of connected devices */
     fileprivate func updateConnectionList() {
-        var deviceList: [String] = []
+        self.connectedDevices.removeAll()
         if ptManager.isConnected {
             #if os(iOS)
-            deviceList.append("Your Mac")
+            connectedDevices.append("Your Mac")
             #elseif os(macOS)
-            deviceList.append("Your iDevice")
+            connectedDevices.append("Your iDevice")
             #endif
         }
         if signal.isConnected {
-            deviceList.append(contentsOf: signal.connectedDeviceNames)
+            connectedDevices.append(contentsOf: signal.connectedDeviceNames)
         }
         
-        delegate?.family(connectedDevicesChanged: deviceList)
+        delegate.invoke { $0.family(connectedDevicesChanged: connectedDevices) }
     }
     
     // MARK: - Methods
+    
+    /** Run this method in the `applicationDidBecomeActive` method to revive the USB connection */
+    func reconnect() {
+        ptManager.connect(portNumber: portNumber)
+    }
+    
+    /** Opens a View Controller where the user can invite nearby devices */
+    #if os(iOS)
+    func inviteSignalUI() {
+        signal.inviteUI()
+    }
+    #endif
+    
+    /** Whether or not the device is currently connected */
     var isConnected: Bool {
         return ptManager.isConnected || signal.isConnected
     }
     
+    /** The type of connection. Either USB, Signal, or none */
+    var connectionType: ConnectionType {
+        if ptManager.isConnected {
+            return .usb
+        } else if signal.isConnected {
+            return .signal
+        } else {
+            return .none
+        }
+    }
+    
+    /** Sends any object with the specified type tag */
     func sendObject(object: Any, type: UInt32) {
         if ptManager.isConnected {
             ptManager.sendObject(object: object, type: type)
@@ -120,6 +163,7 @@ class Family: NSObject {
         }
     }
     
+    /** Sends data with the specified type tag */
     func sendData(data: Data, type: UInt32) {
         if ptManager.isConnected {
             ptManager.sendData(data: data, type: type)
@@ -140,7 +184,7 @@ extension Family: PTManagerDelegate {
     }
     
     func peertalk(didReceiveData data: Data, ofType type: UInt32) {
-        delegate?.family(didReceiveData: data, ofType: type)
+        delegate.invoke { $0.family(didReceiveData: data, ofType: type) }
     }
     
     func peertalk(didChangeConnection connected: Bool) {
@@ -167,15 +211,79 @@ extension Family: PTManagerDelegate {
 extension Family: SignalDelegate {
     
     func signal(didReceiveData data: Data, ofType type: UInt32) {
-        delegate?.family(didReceiveData: data, ofType: type)
+        delegate.invoke { $0.family(didReceiveData: data, ofType: type) }
     }
     
     func signal(connectedDevicesChanged devices: [String]) {
-        OperationQueue.main.addOperation {
-            self.updateConnectionList()
-        }
+        self.updateConnectionList()
     }
     
 }
 
+
+
+// MARK: - Multicast Delegate
+// Allows multiple classes to be the delegate of Family
+// Credit: This class is from http://www.gregread.com/2016/02/23/multicast-delegates-in-swift/
+class MulticastDelegate <T> {
+    private var weakDelegates = [WeakWrapper]()
+    
+    func addDelegate(delegate: T) {
+        // If delegate is a class, add it to our weak reference array
+        if delegate is AnyObject {
+            weakDelegates.append(WeakWrapper(value: delegate as AnyObject))
+        }
+            // Delegate being passed is "by value" (not supported)
+        else {
+            fatalError("MulticastDelegate does not support value types")
+        }
+    }
+    
+    func removeDelegate(delegate: T) {
+        // If delegate is an object, let's loop through weakDelegates to
+        // find it.  We
+        if delegate is AnyObject {
+            for (index, delegateInArray) in weakDelegates.enumerated().reversed() {
+                // If we have a match, remove the delegate from our array
+                if delegateInArray.value === (delegate as AnyObject) {
+                    weakDelegates.remove(at: index)
+                }
+            }
+        }
+        
+        // Else, it's a value type and we don't need to do anything
+    }
+    
+    func invoke(invocation: (T) -> ()) {
+        // Enumerating in reverse order prevents a race condition from happening when removing elements.
+        for (index, delegate) in weakDelegates.enumerated().reversed() {
+            // Since these are weak references, "value" may be nil
+            // at some point when ARC is 0 for the object.
+            if let delegate = delegate.value {
+                invocation(delegate as! T)
+            }
+                // Else, ARC killed it, get rid of the element from our
+                // array
+            else {
+                weakDelegates.remove(at: index)
+            }
+        }
+    }
+}
+
+func += <T: AnyObject> (left: MulticastDelegate<T>, right: T) {
+    left.addDelegate(delegate: right)
+}
+
+func -= <T: AnyObject> (left: MulticastDelegate<T>, right: T) {
+    left.removeDelegate(delegate: right)
+}
+
+private class WeakWrapper {
+    weak var value: AnyObject?
+    
+    init(value: AnyObject) {
+        self.value = value
+    }
+}
 
