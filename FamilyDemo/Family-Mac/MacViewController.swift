@@ -25,7 +25,7 @@ class MacViewController: NSViewController {
         super.viewDidLoad()
         
         family.delegate.addDelegate(delegate: self)
-        family.initialize(portNumber: PORT_NUMBER, serviceType: SERVICE_TYPE, signalType: .Automatic)
+        family.initialize(portNumber: PORT_NUMBER, serviceType: SERVICE_TYPE, signalType: .automatic)
         
         // File Chooser
         panel.canChooseFiles = true

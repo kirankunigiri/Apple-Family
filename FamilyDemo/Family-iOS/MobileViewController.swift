@@ -26,7 +26,7 @@ class MobileViewController: UIViewController {
         super.viewDidLoad()
         
         family.delegate.addDelegate(delegate: self)
-        family.initialize(portNumber: PORT_NUMBER, serviceType: "family-demo", signalType: .Automatic)
+        family.initialize(portNumber: PORT_NUMBER, serviceType: "family-demo", signalType: .automatic)
         
         // Image picker
         imagePicker.delegate = self

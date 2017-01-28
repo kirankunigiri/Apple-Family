@@ -19,12 +19,13 @@ protocol FamilyDelegate {
 }
 
 enum SignalType {
-    case Automatic
-    case InviteAuto
-    case AcceptAuto
+    case automatic
+    case inviteAuto
+    case acceptAuto
     #if os(iOS)
-    case AcceptUI
+    case acceptUI
     #endif
+    case none
 }
 
 enum ConnectionType {
@@ -41,7 +42,7 @@ class Family: NSObject {
     let ptManager = PTManager.instance
     let signal = Signal.instance
     
-    var signalType = SignalType.AcceptAuto
+    var signalType = SignalType.none
     var portNumber: Int!
     var serviceType: String!
     
@@ -79,26 +80,29 @@ class Family: NSObject {
     func startSignal() {
         #if os(macOS)
             switch signalType {
-            case .Automatic:
+            case .automatic:
                 signal.autoConnect()
-            case .InviteAuto:
+            case .inviteAuto:
                 signal.inviteAuto()
-            case .AcceptAuto:
+            case .acceptAuto:
                 signal.acceptAuto()
+            case .none:
+                return
             }
         #endif
             
         #if os(iOS)
             switch signalType {
-            case .Automatic:
+            case .automatic:
                 signal.autoConnect()
-            case .InviteAuto:
+            case .inviteAuto:
                 signal.inviteAuto()
-            case .AcceptAuto:
+            case .acceptAuto:
                 signal.acceptAuto()
-            default:
-                // Accept UI
-                signal.acceptUI()
+            case .acceptUI:
+                return
+            case .none:
+                return
         }
         #endif
     }
