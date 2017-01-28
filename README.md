@@ -26,7 +26,7 @@ Family is simple to setup. Just start the connection, and you can start sending 
 Start the connection. Specify a port number, which can be any 4 digit number, and a service type, which is a string limited to 15 characters and 1 hyphen. In order to be discovered, a device must use the same port number and service type. There are also multiple connection types for wifi/bluetooth connectivity. Check the [Signal](https://github.com/kirankunigiri/Apple-Signal) docs for a description of each Signal type.
 
 ```swift
-Family.instance.delegate = self
+Family.instance.delegate.addDelegate(delegate: self)
 Family.instance.initialize(portNumber: 2345, serviceType: "family-example", signalType: .Automatic)
 ```
 

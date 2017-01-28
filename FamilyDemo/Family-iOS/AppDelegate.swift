@@ -35,7 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         Family.instance.reconnect()
-//        PTManager.instance.connect(portNumber: PORT_NUMBER)
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
@@ -45,4 +44,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-

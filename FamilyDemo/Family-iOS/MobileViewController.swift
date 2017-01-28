@@ -25,7 +25,7 @@ class MobileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        family.delegate = self
+        family.delegate.addDelegate(delegate: self)
         family.initialize(portNumber: PORT_NUMBER, serviceType: "family-demo", signalType: .Automatic)
         
         // Image picker

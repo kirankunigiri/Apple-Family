@@ -24,7 +24,7 @@ class MacViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        family.delegate = self
+        family.delegate.addDelegate(delegate: self)
         family.initialize(portNumber: PORT_NUMBER, serviceType: SERVICE_TYPE, signalType: .Automatic)
         
         // File Chooser
