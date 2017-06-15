@@ -9,7 +9,7 @@ This library is a combination of 2 others I wrote: [Apple Signal](https://github
 
 ## Demo
 
-Coming Soon
+ ![Banner](Images/FamilyDemo.gif)
 
 
 ## Installation
